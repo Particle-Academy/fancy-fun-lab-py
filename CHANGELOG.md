@@ -10,6 +10,8 @@ promising otherwise until 1.0.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-17
+
 ### Added
 
 - **The engine, to parity with laravel-fun-lab 0.8.0.** Catalog setup with the
