@@ -28,20 +28,20 @@ for "gamification" to find this package beside its PHP and Node twins, and
 ```python
 from fancy_fun_lab import FunLab, Subject, SqliteStore
 
-lab = FunLab()                                   # in-memory store, system clock
+lab = FunLab()  # in-memory store, system clock
 # lab = FunLab(store=SqliteStore("app.sqlite"))  # the same tables a Laravel app uses
 
 lab.setup("gamed-metric", {"slug": "combat", "name": "Combat"})
 lab.setup("metric-level", {"metric": "combat", "level": 2, "xp": 100, "name": "Apprentice"})
 lab.setup("achievement", {"slug": "apprentice"})
-lab.attach_achievement("apprentice", metric_level=("combat", 2))   # granted on reaching it
+lab.attach_achievement("apprentice", metric_level=("combat", 2))  # granted on reaching it
 
-ada = Subject("user", 1)                          # any awardable: a type and an id
+ada = Subject("user", 1)  # any awardable: a type and an id
 lab.award("combat").to(ada).amount(150).because("boss").from_("arena").save()
 
-lab.has_level(ada, 2, metric="combat")            # True
-lab.level_info(ada, "combat")                     # current, total, next, progress %
-lab.grant("first-login").to(ada).save()           # AwardResult(success, message)
+lab.has_level(ada, 2, metric="combat")  # True
+lab.level_info(ada, "combat")  # current, total, next, progress %
+lab.grant("first-login").to(ada).save()  # AwardResult(success, message)
 lab.leaderboard().for_("user").period("weekly").take(10)
 lab.analytics().by_type("points").period("monthly").total()
 ```

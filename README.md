@@ -49,7 +49,7 @@ lab.setup("metric-level", {"metric": "combat", "level": 2, "xp": 100})
 
 ada = Subject("user", 1)
 lab.award("combat").to(ada).amount(150).save()
-lab.level_info(ada, "combat")["current_level"]   # 2
+lab.level_info(ada, "combat")["current_level"]  # 2
 ```
 
 ## Status
