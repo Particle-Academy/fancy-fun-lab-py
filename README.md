@@ -54,7 +54,9 @@ lab.level_info(ada, "combat")["current_level"]  # 2
 
 ## Status
 
-Pre-release: not yet published to PyPI.
+```bash
+pip install fancy-fun-lab
+```
 
 ## License
 

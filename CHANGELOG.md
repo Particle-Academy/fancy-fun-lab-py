@@ -10,6 +10,10 @@ promising otherwise until 1.0.
 
 ## [Unreleased]
 
+### Changed
+
+- **Docs:** the README gives the install line (`pip install fancy-fun-lab`) instead of saying the package is not yet published; 0.1.0 is on PyPI. No code changed; nothing to do.
+
 ## [0.1.0] - 2026-11-17
 
 ### Added
