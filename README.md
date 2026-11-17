@@ -22,6 +22,36 @@ renders the same JSON whichever backend produced it.
 > and uses this package is in [AGENTS.md](https://github.com/Particle-Academy/fancy-fun-lab-py/blob/main/AGENTS.md).
 <!-- fancy-agents-note:end -->
 
+## What it does
+
+- **XP to gamed metrics** ("combat", "crafting", "coins"), with a per-action cap
+  and validation hooks.
+- **Levels** per metric, and **level groups** that weigh several metrics
+  together. A level is claimed exactly once, even under concurrent awards.
+- **Achievements**, granted by hand or automatically when a level is reached,
+  and **prizes** with inventory and a claim / fulfil lifecycle.
+- **Leaderboards** all-time, daily, weekly or monthly (on the XP earned in the
+  period), per metric, by awardable type, paged.
+- **An event log** of every award, grant and catalog change, with analytics:
+  counts, totals, active users, completion rates, time series, breakdowns.
+- **Opt-out**, honoured everywhere.
+- **Stores:** in-memory, or SQLite on the standard library using
+  laravel-fun-lab's own tables, so it can share a database with a Laravel app.
+
+## Example
+
+```python
+from fancy_fun_lab import FunLab, Subject
+
+lab = FunLab()
+lab.setup("gamed-metric", {"slug": "combat"})
+lab.setup("metric-level", {"metric": "combat", "level": 2, "xp": 100})
+
+ada = Subject("user", 1)
+lab.award("combat").to(ada).amount(150).save()
+lab.level_info(ada, "combat")["current_level"]   # 2
+```
+
 ## Status
 
 Pre-release: not yet published to PyPI.

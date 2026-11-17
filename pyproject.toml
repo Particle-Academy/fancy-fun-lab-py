@@ -77,7 +77,13 @@ extend-exclude = [".conformance"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF", "N", "C4", "PT"]
-ignore = ["RUF022"]
+ignore = [
+    # `__all__` is grouped by role with a comment per block.
+    "RUF022",
+    # The exception names mirror the PHP classes they port (AwardRejectedException,
+    # PeriodLeaderboardUnavailableException), so a reader can find the peer.
+    "N818",
+]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["SLF001", "PT011", "PT012", "PT018", "ARG001", "ARG005", "E501"]
