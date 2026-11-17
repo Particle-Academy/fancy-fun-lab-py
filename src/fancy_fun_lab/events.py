@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any
 
 from .clock import iso
@@ -47,6 +48,15 @@ class XpAwarded:
     reason: str | None = None
     source: str | None = None
     meta: dict[str, Any] = field(default_factory=dict)
+    #: When it happened. Set by the engine; ``payload`` prints it as ``occurred_at``.
+    occurred_at: datetime | None = None
+
+    @property
+    def payload(self) -> dict[str, Any]:
+        """The flat wire payload laravel-fun-lab broadcasts (``xp_awarded_payload``)."""
+        from .payloads import xp_awarded_payload
+
+        return xp_awarded_payload(self)
 
     def to_log(self, at: Any) -> dict[str, Any]:
         return {
@@ -76,6 +86,15 @@ class MetricLevelReached:
     recipient: Any
     achievements: list[Row]
     total_xp: int
+    #: When it happened. Set by the engine; ``payload`` prints it as ``occurred_at``.
+    occurred_at: datetime | None = None
+
+    @property
+    def payload(self) -> dict[str, Any]:
+        """The flat wire payload laravel-fun-lab broadcasts (``level_reached_payload``)."""
+        from .payloads import level_reached_payload
+
+        return level_reached_payload(self)
 
 
 @dataclass
@@ -85,6 +104,13 @@ class AchievementUnlocked:
     grant: Row
     reason: str | None = None
     source: str | None = None
+
+    @property
+    def payload(self) -> dict[str, Any]:
+        """The flat wire payload laravel-fun-lab broadcasts (``achievement_unlocked_payload``)."""
+        from .payloads import achievement_unlocked_payload
+
+        return achievement_unlocked_payload(self)
 
     def to_log(self, at: Any) -> dict[str, Any]:
         return {
@@ -110,6 +136,13 @@ class PrizeAwarded:
     reason: str | None = None
     source: str | None = None
     meta: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def payload(self) -> dict[str, Any]:
+        """The flat wire payload laravel-fun-lab broadcasts (``prize_awarded_payload``)."""
+        from .payloads import prize_awarded_payload
+
+        return prize_awarded_payload(self)
 
     def to_log(self, at: Any) -> dict[str, Any]:
         return {

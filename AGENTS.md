@@ -63,6 +63,14 @@ lab.analytics().by_type("points").period("monthly").total()
 - **Events:** `lab.on("xp.awarded", fn)`, also `metric.level-reached`,
   `achievement.unlocked`, `prize.awarded`, `award.granted`, `catalog.mutated`,
   or `"*"` for `fn(name, event)`. Nothing is broadcast; wire them yourself.
+  **Relay `event.payload`, not the event:** the four broadcastable events
+  (`xp.awarded`, `metric.level-reached`, `achievement.unlocked`,
+  `prize.awarded`) carry `payload`, the flat dict laravel-fun-lab broadcasts
+  over Echo and `@particle-academy/fancy-fun-lab-ui` reads (`feedItemFromEcho`,
+  `FunLabXpFeed`, `FunLabLevelUp`). The event's own attributes are raw rows;
+  sending those makes the UI render `+5 XP in {metric}`. The same serializers
+  are `xp_awarded_payload(e)`, `level_reached_payload(e)`,
+  `achievement_unlocked_payload(e)`, `prize_awarded_payload(e)`.
 - **Validation:** `lab.add_validation_step(fn)`; return
   `{"valid": False, "message": ...}` to refuse an award or grant.
 - **JSON:** `fancy_fun_lab.resources` turns rows into the exact shapes the

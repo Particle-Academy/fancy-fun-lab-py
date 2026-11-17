@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "fancy-fun-lab"
-version = "0.1.0"
+version = "0.1.1"
 description = "Headless gamification engine - XP to gamed metrics, levels and weighted level groups, achievements, prizes with inventory, leaderboards and an event log with analytics. Zero runtime dependencies. The Python twin of PHP particle-academy/laravel-fun-lab and Node @particle-academy/fancy-fun-lab, held to them by shared conformance fixtures."
 readme = "README.md"
 requires-python = ">=3.11"

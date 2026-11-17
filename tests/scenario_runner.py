@@ -42,17 +42,25 @@ class _Clock:
         return self.now
 
 
-def run_scenario(spec: dict[str, Any], store_factory: Callable[[], Store]) -> dict[str, Any]:
+#: The events laravel-fun-lab broadcasts; the fun-lab/events table pins their payloads.
+BROADCASTS = ("xp.awarded", "metric.level-reached", "achievement.unlocked", "prize.awarded")
+
+
+def run_scenario(
+    spec: dict[str, Any], store_factory: Callable[[], Store], broadcasts: bool = False
+) -> dict[str, Any]:
+    """``broadcasts=False`` is fun-lab/progression's ``scenario``; ``True`` is
+    fun-lab/events' ``broadcasts``: each broadcastable event's ``payload``."""
     store = store_factory()
     try:
-        return _run(spec, store)
+        return _run(spec, store, broadcasts)
     finally:
         close = getattr(store, "close", None)
         if close is not None:
             close()
 
 
-def _run(spec: dict[str, Any], store: Store) -> dict[str, Any]:
+def _run(spec: dict[str, Any], store: Store, broadcasts: bool) -> dict[str, Any]:
     clock = _Clock(str(spec["clock"]))
     config = spec.get("config") or {}
     lab = FunLab(
@@ -72,13 +80,22 @@ def _run(spec: dict[str, Any], store: Store) -> dict[str, Any]:
         subjects[name] = Subject(type=kind, id=index)
 
     events: list[dict[str, Any]] = []
-    lab.on("*", lambda name, event: events.append(_capture(name, event)))
+    if broadcasts:
+        lab.on(
+            "*",
+            lambda name, event: events.append(
+                {"event": name, "payload": event.payload} if name in BROADCASTS else {}
+            ),
+        )
+    else:
+        lab.on("*", lambda name, event: events.append(_capture(name, event)))
 
     out = []
     for step in spec["steps"]:
         events.clear()
         result = _step(lab, clock, subjects, step)
-        out.append({"result": result, "events": [e for e in events if e]})
+        key = "broadcasts" if broadcasts else "events"
+        out.append({"result": result, key: [e for e in events if e]})
     return {"steps": out}
 
 

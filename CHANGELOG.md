@@ -10,6 +10,18 @@ promising otherwise until 1.0.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-17
+
+### Fixed
+
+- **The broadcastable events now carry the payload laravel-fun-lab broadcasts.** `xp.awarded`, `metric.level-reached`, `achievement.unlocked` and `prize.awarded` events gain a `payload` property: the flat dict PHP's `broadcastWith()` returns, key for key (`{id, profile_id, gamed_metric_id, gamed_metric_slug, gamed_metric_name, amount, total_xp, current_level, reason, source, occurred_at}` for `xp.awarded`; `{profile_id, gamed_metric_id, gamed_metric_slug, gamed_metric_name, level, level_name, xp_threshold, total_xp, achievements: [{id, slug, name, icon}], occurred_at}` for `metric.level-reached`; the grant payloads for the other two). In 0.1.0 a host could only relay the raw event, whose rows are nested, so `@particle-academy/fancy-fun-lab-ui` rendered `+5 XP in {metric}` and `FunLabLevelUp` the same way. **Consumer action:** if you relay events to a browser, send `event.payload` instead of the event (or your own mapping, which you can now delete). Nothing else changes: the events keep every attribute they had.
+- `XpAwarded` and `MetricLevelReached` gain an `occurred_at` attribute (the engine's clock at emission), defaulted, so constructing them positionally still works.
+
+### Added
+
+- `fancy_fun_lab.payloads`: `xp_awarded_payload`, `level_reached_payload`, `achievement_unlocked_payload`, `prize_awarded_payload`, also exported from the package root. The same serializers `event.payload` uses.
+- Runs the new `fun-lab/events` table (fancy-conformance 0.50.0, 9 rows, goldens exported from the PHP event classes' `broadcastWith()`), on both stores. Test-only.
+
 ### Changed
 
 - **Docs:** the README gives the install line (`pip install fancy-fun-lab`) instead of saying the package is not yet published; 0.1.0 is on PyPI. No code changed; nothing to do.

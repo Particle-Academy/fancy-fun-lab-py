@@ -16,8 +16,12 @@ from fancy_fun_lab import (
     PeriodLeaderboardUnavailable,
     Subject,
     __version__,
+    achievement_unlocked_payload,
     headline,
+    level_reached_payload,
+    prize_awarded_payload,
     slug,
+    xp_awarded_payload,
 )
 
 AT = datetime(2026, 11, 18, 12, 0, 0)
@@ -32,7 +36,38 @@ def _lab(**config: Any) -> FunLab:
 
 
 def test_version() -> None:
-    assert __version__ == "0.1.0"
+    assert __version__ == "0.1.1"
+
+
+def test_each_broadcastable_event_keeps_its_rows_and_carries_the_flat_payload() -> None:
+    lab = FunLab(clock=lambda: AT)
+    seen: dict[str, Any] = {}
+    lab.on("*", lambda name, e: seen.__setitem__(name, e))
+    lab.setup("gamed-metric", {"slug": "combat-xp", "name": "Combat XP"})
+    lab.setup("metric-level", {"metric": "combat-xp", "level": 2, "xp": 5, "name": "Two"})
+    lab.setup("achievement", {"slug": "two", "icon": "star"})
+    lab.setup("prize", {"slug": "hat"})
+    lab.attach_achievement("two", metric_level=("combat-xp", 2))
+    lab.award("combat-xp").to(ADA).amount(5).save()
+    lab.grant("hat").to(ADA).save()
+
+    xp = seen["xp.awarded"]
+    assert xp.gamed_metric["slug"] == "combat-xp"  # additive: the raw rows are still there
+    assert xp.payload == xp_awarded_payload(xp)
+    assert xp.payload["id"] == 1
+    assert xp.payload["gamed_metric_name"] == "Combat XP"
+    assert xp.payload["current_level"] == 2
+    assert xp.payload["occurred_at"] == "2026-11-18T12:00:00+00:00"
+    level = seen["metric.level-reached"]
+    assert level.payload == level_reached_payload(level)
+    assert level.payload["achievements"] == [
+        {"id": 1, "slug": "two", "name": "Two", "icon": "star"}
+    ]
+    ach = seen["achievement.unlocked"]
+    assert ach.payload == achievement_unlocked_payload(ach)
+    prize = seen["prize.awarded"]
+    assert prize.payload == prize_awarded_payload(prize)
+    assert prize.payload["status"] == "granted"
 
 
 def test_listeners_by_name_and_wildcard_and_unsubscribe() -> None:

@@ -26,7 +26,7 @@ from .scenario_runner import run_scenario
 
 #: Moved deliberately, never automatically. A pin that follows whatever is on
 #: disk asserts nothing. CI checks out `ref: v<this>`; move the two together.
-PINNED_SUITE_VERSION = "0.49.0"
+PINNED_SUITE_VERSION = "0.50.0"
 
 #: Rows per suite at the pinned version: the vacuity guard.
 SUITES = {
@@ -35,6 +35,7 @@ SUITES = {
     "fun-lab/grants": 10,
     "fun-lab/leaderboard": 11,
     "fun-lab/analytics": 8,
+    "fun-lab/events": 9,
 }
 
 STORES: dict[str, Callable[[], Store]] = {
@@ -52,6 +53,8 @@ def _impl(store_factory: Callable[[], Store]) -> Callable[[dict[str, Any]], Any]
             return headline(case["input"]["value"])
         if fn == "scenario":
             return run_scenario(case["input"], store_factory)
+        if fn == "broadcasts":
+            return run_scenario(case["input"], store_factory, broadcasts=True)
         raise AssertionError(f"case {case['id']} calls unimplemented fn {fn}")
 
     return run

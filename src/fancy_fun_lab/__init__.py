@@ -7,7 +7,7 @@ conformance tables.
 
 from __future__ import annotations
 
-from . import resources
+from . import payloads, resources
 from .analytics import AnalyticsBuilder
 from .engine import AwardResult, AwardXpBuilder, FunLab, FunLabConfig, GrantBuilder, Subject
 from .errors import AwardRejected, FunLabError, PeriodLeaderboardUnavailable
@@ -26,11 +26,17 @@ from .events import (
     XpAwarded,
 )
 from .leaderboard import LeaderboardBuilder, LeaderboardEntry, LeaderboardPage
+from .payloads import (
+    achievement_unlocked_payload,
+    level_reached_payload,
+    prize_awarded_payload,
+    xp_awarded_payload,
+)
 from .sqlite_store import SqliteStore
 from .store import InMemoryStore, Row, Store
 from .strings import headline, slug
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "__version__",
@@ -69,6 +75,11 @@ __all__ = [
     "PeriodLeaderboardUnavailable",
     # Serializers and strings
     "resources",
+    "payloads",
+    "xp_awarded_payload",
+    "level_reached_payload",
+    "achievement_unlocked_payload",
+    "prize_awarded_payload",
     "slug",
     "headline",
 ]

@@ -529,7 +529,9 @@ class FunLab:
 
         pm = self._check_progression(fresh, metric)
         self._check_group_progression(profile, metric)
-        self._emit(XP_AWARDED, XpAwarded(pm, metric, subject, amount, reason, source, meta))
+        self._emit(
+            XP_AWARDED, XpAwarded(pm, metric, subject, amount, reason, source, meta, self.now())
+        )
         return pm
 
     def _claim(
@@ -607,7 +609,9 @@ class FunLab:
                     granted.append(ach)
             self._emit(
                 METRIC_LEVEL_REACHED,
-                MetricLevelReached(profile, pm, metric, level, subject, granted, total_xp),
+                MetricLevelReached(
+                    profile, pm, metric, level, subject, granted, total_xp, self.now()
+                ),
             )
         return pm
 
