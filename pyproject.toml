@@ -1,0 +1,91 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fancy-fun-lab"
+version = "0.1.0"
+description = "Headless gamification engine - XP to gamed metrics, levels and weighted level groups, achievements, prizes with inventory, leaderboards and an event log with analytics. Zero runtime dependencies. The Python twin of PHP particle-academy/laravel-fun-lab and Node @particle-academy/fancy-fun-lab, held to them by shared conformance fixtures."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Particle Academy" }]
+keywords = [
+    "gamification",
+    "xp",
+    "levels",
+    "achievements",
+    "badges",
+    "prizes",
+    "leaderboard",
+    "engagement",
+    "headless",
+    "fancy",
+    "particle-academy",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Libraries",
+    "Typing :: Typed",
+]
+
+# ZERO runtime dependencies. Persistence is a Protocol with an in-memory store
+# and a SQLite store on the standard library's sqlite3; the clock is injected;
+# the slug and headline transforms are our own, pinned by the shared
+# fun-lab/strings table. Owner-approved scope: .ai/plans/fun-lab-twins.md.
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Particle-Academy/fancy-fun-lab-py"
+Issues = "https://github.com/Particle-Academy/fancy-fun-lab-py/issues"
+Source = "https://github.com/Particle-Academy/fancy-fun-lab-py"
+
+[dependency-groups]
+# `fancy-conformance` is deliberately NOT listed: it is never published to
+# PyPI. pytest's `pythonpath` reaches the checkout beside this repository in the
+# .agi envelope, and CI puts its checkout of the pinned tag on PYTHONPATH.
+test = ["pytest>=8.0"]
+lint = ["ruff>=0.16"]
+typecheck = ["mypy>=1.11"]
+dev = [{ include-group = "test" }, { include-group = "lint" }, { include-group = "typecheck" }]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fancy_fun_lab"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/README.md", "/CHANGELOG.md", "/AGENTS.md", "/LICENSE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "../fancy-conformance/python/src"]
+addopts = "--import-mode=importlib -ra"
+filterwarnings = ["error"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+target-version = "py311"
+# CI checks fancy-conformance out INSIDE the workspace; it is linted in its own CI.
+extend-exclude = [".conformance"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF", "N", "C4", "PT"]
+ignore = ["RUF022"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["SLF001", "PT011", "PT012", "PT018", "ARG001", "ARG005", "E501"]
+
+[tool.mypy]
+python_version = "3.11"
+packages = ["fancy_fun_lab"]
+mypy_path = "src"
+strict = true
+disallow_any_expr = false
+disallow_any_explicit = false
