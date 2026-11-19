@@ -15,6 +15,7 @@ promising otherwise until 1.0.
 - **CI: the lab-certificate gate verifies against the lab's rotated key list.**
   The lab's first signing key is retired: certificates it already issued still
   verify, and nothing new it signs ever can. Consumers do nothing.
+- CI: re-pin org third-party allowlist to 2614224
 
 ## [0.1.1] - 2026-11-17
 
